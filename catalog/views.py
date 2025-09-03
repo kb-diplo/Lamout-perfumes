@@ -249,42 +249,46 @@ def checkout(request):
         location = request.POST.get('location')
         special_requests = request.POST.get('special_requests', '')
         
-        if not all([customer_name, phone_number, email, location]):
+        if not all([customer_name, phone_number, location]):
             messages.error(request, 'Please fill in all required fields')
-            return redirect('checkout')
+            return redirect('catalog:checkout')
             
-        # Prepare WhatsApp message
-        whatsapp_message = f"""NEW PERFUME ORDER
+        # Prepare professional WhatsApp message
+        whatsapp_message = f"""🌟 *LAMOUT PERFUME - NEW ORDER* 🌟
 
-Customer: {customer_name}
-Phone: {phone_number}
-Email: {email}
-Location: {location}
+👤 *Customer Information:*
+• Name: {customer_name}
+• Phone: {phone_number}
+• Email: {email if email else 'Not provided'}
+• Location: {location}
 
-ORDER DETAILS:
-"""
+🛍️ *Order Details:*"""
+        
         total_amount = 0
         for item in cart_items:
             item_total = item.total_price
             total_amount += item_total
             product_info = f"{item.quantity}x {item.product.name}"
             if item.is_custom_ml and item.custom_ml:
-                product_info += f" ({item.custom_ml}ml)"
-            whatsapp_message += f"• {product_info} - KSH {item_total:,.2f}\n"
+                product_info += f" ({item.custom_ml}ml custom)"
+            whatsapp_message += f"\n• {product_info} - *KSH {item_total:,.2f}*"
         
         whatsapp_message += f"""
-TOTAL AMOUNT: KSH {total_amount:,.2f}
 
-Special Requests:
+💰 *TOTAL AMOUNT: KSH {total_amount:,.2f}*
+
+📝 *Special Requests:*
 {special_requests if special_requests else 'None'}
 
----
-Order submitted via Lamout Perfume website
-Payment will be confirmed via WhatsApp""".strip()
+━━━━━━━━━━━━━━━━━━━━━━━━━
+🌐 Order via: lamoutperfumes.pythonanywhere.com
+⏰ Order Time: {timezone.now().strftime('%Y-%m-%d %H:%M')}
+
+Please confirm payment method and delivery details. Thank you for choosing Lamout Perfume! 🙏"""
         
         # URL encode the message for WhatsApp
         encoded_message = urllib.parse.quote(whatsapp_message)
-        whatsapp_url = f"https://wa.me/254716301107?text={encoded_message}"
+        whatsapp_url = f"https://wa.me/254616301107?text={encoded_message}"
         
         # Store data for success page
         request.session['whatsapp_url'] = whatsapp_url
@@ -295,7 +299,7 @@ Payment will be confirmed via WhatsApp""".strip()
         cart_items.delete()
         cart.update_totals()
         
-        return redirect('checkout_success')
+        return redirect('catalog:checkout_success')
     
     context = {
         'cart': cart,

@@ -48,7 +48,6 @@ PYTHONANYWHERE_DOMAIN=yourusername.pythonanywhere.com
 
 ```bash
 # Run migrations
-python manage.py migrate
 
 # Create superuser for admin access
 python manage.py createsuperuser
@@ -60,10 +59,10 @@ python categorize_products.py
 ## Step 5: Collect Static Files
 
 ```bash
-# Create static files directory
-mkdir -p /home/yourusername/Lamout-perfumes/staticfiles
+# Pull the latest code with STATIC_ROOT fix
+git pull origin main
 
-# Collect static files
+# Collect static files (creates staticfiles/ directory automatically)
 python manage.py collectstatic --noinput
 ```
 

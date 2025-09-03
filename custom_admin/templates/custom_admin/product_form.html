@@ -1,0 +1,173 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}{% if form.instance.id %}Edit{% else %}Add New{% endif %} Product - Lamout Perfumes Admin{% endblock %}
+
+{% block page_title %}{% if form.instance.id %}Edit Product{% else %}Add New Product{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                <p class="mb-0">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Product Name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.name.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.description.errors.0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.category.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.stock_quantity.id_for_label }}" class="form-label">Stock Quantity (Full Packages)</label>
+                                {{ form.stock_quantity }}
+                                {% if form.stock_quantity.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.stock_quantity.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Pricing</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.price.id_for_label }}" class="form-label">Full Package Price (KSh)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">KSh</span>
+                                            {{ form.price }}
+                                        </div>
+                                        <small class="form-text text-muted">Price for one complete package</small>
+                                        {% if form.price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.price.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="{{ form.ml_price.id_for_label }}" class="form-label">Price per ml (KSh)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">KSh</span>
+                                            {{ form.ml_price }}
+                                        </div>
+                                        <small class="form-text text-muted">Price per ml for custom quantities</small>
+                                        {% if form.ml_price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.ml_price.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                <small class="text-muted">Set to 0 to disable per ml pricing</small>
+                                {% if form.ml_price.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.ml_price.errors.0 }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Product Display</h6>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="bg-light p-5 mb-4 rounded text-center">
+                                <i class="fas fa-wine-bottle fa-4x text-muted"></i>
+                                <p class="mt-2 mb-0 text-muted">Product image will be handled in the gallery</p>
+                            </div>
+                            <div class="alert alert-info">
+                                <small>
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Product images are managed in the gallery section.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Save Product
+                        </button>
+                        <a href="{% url 'custom_admin:product_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap classes to form elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add form-control class to all input and select elements
+        const formElements = document.querySelectorAll('input, select, textarea');
+        formElements.forEach(element => {
+            if (!element.classList.contains('btn') && !element.classList.contains('form-check-input')) {
+                element.classList.add('form-control');
+            }
+            
+            // Add is-invalid class to fields with errors
+            if (element.nextElementSibling && element.nextElementSibling.classList.contains('invalid-feedback')) {
+                element.classList.add('is-invalid');
+            }
+        });
+        
+        // Initialize select2 if available
+        if (typeof $ !== 'undefined' && $.fn.select2) {
+            $('select').select2({
+                theme: 'bootstrap5'
+            });
+        }
+    });
+</script>
+{% endblock %}

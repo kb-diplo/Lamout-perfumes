@@ -1,0 +1,98 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Manage Categories - Lamout Perfumes Admin{% endblock %}
+
+{% block page_title %}Manage Categories{% endblock %}
+
+{% block content %}
+<!-- Overview Stats -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <h3 class="text-primary">{{ total_products }}</h3>
+                        <p class="mb-0">Total Products</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="text-success">{{ categories|length }}</h3>
+                        <p class="mb-0">Product Categories</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Product Categories -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-tags"></i> Product Categories</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for category_code, category_data in categories.items %}
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 border-primary">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">{{ category_data.name }}</h6>
+                                <p class="card-text">
+                                    <span class="badge bg-primary">{{ category_data.count }} Products</span>
+                                </p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'custom_admin:product_list' %}?category={{ category_code }}" 
+                                   class="btn btn-sm btn-outline-primary w-100">
+                                    View Products
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Statistics Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Category Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Product Count</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category_code, category_data in categories.items %}
+                            <tr>
+                                <td>{{ category_data.name }}</td>
+                                <td>{{ category_data.count }}</td>
+                                <td>
+                                    <a href="{% url 'custom_admin:product_list' %}?category={{ category_code }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'custom_admin/base.html' %}
+
+{% block title %}Settings - Lamout Perfumes Admin{% endblock %}
+
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Site Configuration</h5>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="siteName" class="form-label">Site Name</label>
+                        <input type="text" class="form-control" id="siteName" value="{{ site_name }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="siteDescription" class="form-label">Site Description</label>
+                        <textarea class="form-control" id="siteDescription" rows="3" readonly>Premium fragrance collection bringing you the finest scents from around the world.</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactPhone" class="form-label">Contact Phone</label>
+                        <input type="text" class="form-control" id="contactPhone" value="+254616301107" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactEmail" class="form-label">Contact Email</label>
+                        <input type="email" class="form-control" id="contactEmail" value="info@lamoutperfumes.com" readonly>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">System Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Total Products:</span>
+                    <span class="badge bg-primary">{{ total_products }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Featured Products:</span>
+                    <span class="badge bg-success">{{ featured_products }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Years in Business:</span>
+                    <span class="badge bg-info">3+</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'custom_admin:product_add' %}" class="btn btn-primary w-100 mb-2">
+                    <i class="fas fa-plus"></i> Add Product
+                </a>
+                <a href="{% url 'custom_admin:product_list' %}" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="fas fa-list"></i> View Products
+                </a>
+                <a href="{% url 'custom_admin:gallery_manager' %}" class="btn btn-outline-info w-100">
+                    <i class="fas fa-images"></i> Gallery
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

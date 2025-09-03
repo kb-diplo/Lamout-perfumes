@@ -65,6 +65,15 @@
       z-index: 100;
     }
     
+    /* Fix mobile filter overlay issue */
+    @media (max-width: 768px) {
+      .filter-section {
+        position: relative;
+        top: auto;
+        z-index: auto;
+      }
+    }
+    
     .filter-btn {
       margin: 5px;
       border-radius: 25px;

@@ -25,6 +25,10 @@ if os.path.isfile("env.py"):
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-development-key-change-in-production")
 
 # Quick-start development settings - unsuitable for production
@@ -54,18 +58,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
     
     # Third party apps
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
     "crispy_forms",
     "crispy_bootstrap5",
-    'custom_admin',
+    
     # Local apps
     "home",
     "catalog",
+    "custom_admin",
 ]
 
 MIDDLEWARE = [
@@ -74,7 +75,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -89,7 +89,6 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             os.path.join(BASE_DIR, "templates"),
-            os.path.join(BASE_DIR, "templates", "allauth"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -110,21 +109,10 @@ TEMPLATES = [
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
-AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
+AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
+]
 
-SITE_ID = 1
-
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = False
-ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = '/custom-admin/login/'
 LOGIN_REDIRECT_URL = '/custom-admin/'
 
@@ -232,13 +220,7 @@ FREE_DELIVERY_THRESHOLD = 100
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "lamoutperfume@gmail.com"
 
-# Allauth configuration
-SITE_ID = 1
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
-ACCOUNT_USERNAME_MIN_LENGTH = 4
+# Authentication URLs
 LOGIN_URL = '/custom-admin/login/'
 LOGIN_REDIRECT_URL = '/custom-admin/'
 LOGOUT_REDIRECT_URL = '/custom-admin/login/'

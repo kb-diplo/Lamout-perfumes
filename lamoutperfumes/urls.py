@@ -22,11 +22,8 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path("", include("home.urls")),
     path("catalog/", include(("catalog.urls", "catalog"), namespace="catalog")),
-    path("admin/", admin.site.urls),  # Keep Django admin as fallback
     path("custom-admin/", include("custom_admin.urls", namespace="custom_admin")),
-    path("accounts/", include("allauth.urls")),  # Add Allauth URLs
-    # Redirect root admin to custom admin
-    path("admin/", RedirectView.as_view(url="/custom-admin/", permanent=False)),
+    path("admin/", admin.site.urls),  # Keep Django admin as fallback
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = "home.views.error_404"

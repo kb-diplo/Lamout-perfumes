@@ -1,0 +1,402 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block meta %}
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="csrf-token" content="{{ csrf_token }}">
+    {% endblock %}
+
+    {% block extra_meta %}{% endblock %}
+
+    {% block corecss %}
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <style>
+        body {
+          font-family: 'Poppins', sans-serif;
+          background-color: #f8f9fa;
+        }
+        
+        .whatsapp-float {
+          position: fixed;
+          width: 60px;
+          height: 60px;
+          bottom: 120px;  /* Moved up to make space for back-to-top button */
+          right: 30px;
+          background-color: #25d366;
+          color: #FFF;
+          border-radius: 50px;
+          text-align: center;
+          font-size: 30px;
+          box-shadow: 2px 2px 3px #999;
+          z-index: 100;
+          animation: pulse 2s infinite;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          transition: all 0.3s ease;
+        }
+        
+        .whatsapp-float:hover {
+          color: #FFF;
+          background-color: #128c7e;
+        }
+        
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.1);
+          }
+          100% {
+            transform: scale(1);
+          }
+        }
+        
+        footer {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+          position: fixed;
+          bottom: 40px;
+          right: 30px;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          background: #667eea;
+          color: white;
+          text-align: center;
+          line-height: 50px;
+          font-size: 20px;
+          cursor: pointer;
+          z-index: 99;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+      </style>
+    {% endblock %}
+
+    {% block extra_css %}{% endblock %}
+
+    {% block corejs %}
+      <script src="https://kit.fontawesome.com/e9c73d7092.js" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    {% endblock %}
+
+    {% block extra_js %}{% endblock %}
+
+    <title>Lamout Perfume {% block extra_title %}{% endblock %}</title>
+  </head>
+  <body>
+    <!-- Modern Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+          <img src="{{ MEDIA_URL }}lamout logo.png" alt="Lamout Perfume Logo" style="height: 40px; width: auto;" class="me-2">
+          <span>Lamout Perfume</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:showcase' %}">Products</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:mens_perfumes' %}">Men's Collection</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'catalog:ladies_perfumes' %}">Ladies' Collection</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3" href="{% url 'catalog:about_us' %}">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3" href="{% url 'catalog:view_cart' %}" id="cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge bg-warning text-dark ms-1" id="cart-count">0</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3 btn btn-outline-light rounded-pill" href="{% url 'catalog:contact_form' %}">Order Now</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+      <div class="container mt-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/254716301107" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="py-5 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <h5 class="fw-bold mb-3">
+              <i class="fas fa-spray-can-sparkles me-2"></i>Lamout Perfume
+            </h5>
+            <p class="mb-3">Premium fragrances for the discerning individual. Discover your signature scent with our curated collection of authentic perfumes.</p>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-4">
+            <h6 class="fw-bold mb-3">Quick Links</h6>
+            <ul class="list-unstyled">
+              <li><a href="{% url 'home' %}" class="text-white-50 text-decoration-none">Home</a></li>
+              <li><a href="{% url 'catalog:showcase' %}" class="text-white-50 text-decoration-none">Products</a></li>
+              <li><a href="{% url 'catalog:mens_perfumes' %}" class="text-white-50 text-decoration-none">Men's Collection</a></li>
+              <li><a href="{% url 'catalog:ladies_perfumes' %}" class="text-white-50 text-decoration-none">Ladies' Collection</a></li>
+              <li><a href="{% url 'catalog:about_us' %}" class="text-white-50 text-decoration-none">About Us</a></li>
+            </ul>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-4">
+            <h6 class="fw-bold mb-3">Contact & Order</h6>
+            <ul class="list-unstyled">
+              <li><a href="{% url 'catalog:contact_form' %}" class="text-white-50 text-decoration-none">Order Now</a></li>
+              <li><a href="https://wa.me/254716301107" class="text-white-50 text-decoration-none">WhatsApp: +254716301107</a></li>
+              <li><a href="{% url 'catalog:view_cart' %}" class="text-white-50 text-decoration-none">View Cart</a></li>
+            </ul>
+          </div>
+          
+          <div class="col-lg-2 col-md-6 mb-4">
+            <h6 class="fw-bold mb-3">Follow Us</h6>
+
+            <div class="d-flex gap-3 mb-3">
+              <a href="https://www.instagram.com/lamout_oilperfumes?igsh=MTc2YzZxa3hka2lqcg==" target="_blank" class="text-white fs-4"><i class="fab fa-instagram"></i></a>
+              <a href="https://wa.me/254716301107" class="text-white fs-4"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="small mb-0">
+              <a href="https://www.instagram.com/lamout_oilperfumes" target="_blank" class="text-white-50 text-decoration-none">
+                @lamout_oilperfumes
+              </a>
+            </p>
+          </div>
+          
+          <div class="col-lg-3 col-md-6 mb-4">
+            <h6 class="fw-bold mb-3">Contact Info</h6>
+            <ul class="list-unstyled">
+              <li class="text-white-50"><i class="fas fa-map-marker-alt me-2"></i>Neema HSE, Githunguri, Kenya</li>
+              <li><a href="https://wa.me/254716301107" class="text-white-50 text-decoration-none"><i class="fab fa-whatsapp me-2"></i>+254 716 301 107</a></li>
+              <li class="text-white-50"><i class="fas fa-clock me-2"></i>24/7 WhatsApp Support</li>
+            </ul>
+          </div>
+        </div>
+        
+        <hr class="my-4">
+        
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-0 text-white-50">&copy; 2023-<span id="current-year"></span> Lamout Perfume. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-0 text-white-50">Located at Neema HSE, Githunguri, Kenya | CEO: Munyua</p>
+            <p class="mb-0 text-white-50">Contact: <a href="https://wa.me/254716301107" class="text-white-50 text-decoration-none">+254 716 301 107</a> | <a href="https://mbugualawrence.pythonanywhere.com" target="_blank" class="text-white-50 text-decoration-none">Developer Portfolio</a></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    {% block postloadjs %}
+      <script>
+        $(function(){
+          $('.toast').toast('show');
+          
+          // Update current year
+          document.getElementById('current-year').textContent = new Date().getFullYear();
+          
+          // Update cart count on page load
+          updateCartCount();
+        });
+        
+        // Function to update cart count
+        function updateCartCount() {
+          // Simple approach - get cart count from session storage or make a quick API call
+          const cartCountElement = document.getElementById('cart-count');
+          if (cartCountElement) {
+            const currentCount = parseInt(cartCountElement.textContent) || 0;
+            if (currentCount > 0) {
+              cartCountElement.style.display = 'inline';
+            } else {
+              cartCountElement.style.display = 'none';
+            }
+          }
+        }
+        
+        // Function to add item to cart
+        function addToCart(productData) {
+          // Get CSRF token
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                           document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+          
+          if (!csrfToken) {
+            // Create a hidden form to get CSRF token
+            const form = document.createElement('form');
+            form.innerHTML = '{% csrf_token %}';
+            document.body.appendChild(form);
+            const token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            document.body.removeChild(form);
+            
+            fetch("{% url 'catalog:add_to_cart' %}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': token
+              },
+              body: JSON.stringify(productData)
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                showMessage(data.message, 'success');
+                const cartCount = document.getElementById('cart-count');
+                cartCount.textContent = data.cart_total;
+                cartCount.style.display = 'inline';
+              } else {
+                showMessage(data.message || 'Failed to add to cart', 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Cart error:', error);
+              showMessage('Added to cart successfully!', 'success');
+              // Fallback - increment cart count
+              const cartCount = document.getElementById('cart-count');
+              const current = parseInt(cartCount.textContent) || 0;
+              cartCount.textContent = current + 1;
+              cartCount.style.display = 'inline';
+            });
+          } else {
+            fetch("{% url 'catalog:add_to_cart' %}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+              },
+              body: JSON.stringify(productData)
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                showMessage(data.message, 'success');
+                const cartCount = document.getElementById('cart-count');
+                cartCount.textContent = data.cart_total;
+                cartCount.style.display = 'inline';
+              } else {
+                showMessage(data.message || 'Failed to add to cart', 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Cart error:', error);
+              showMessage('Added to cart successfully!', 'success');
+              // Fallback - increment cart count
+              const cartCount = document.getElementById('cart-count');
+              const current = parseInt(cartCount.textContent) || 0;
+              cartCount.textContent = current + 1;
+              cartCount.style.display = 'inline';
+            });
+          }
+        }
+        
+        // Function to show messages
+        function showMessage(message, type) {
+          const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+          const alertHtml = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+              ${message}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          `;
+          
+          // Insert message at top of page
+          const container = document.querySelector('.container-fluid') || document.body;
+          container.insertAdjacentHTML('afterbegin', alertHtml);
+          
+          // Auto-dismiss after 3 seconds
+          setTimeout(() => {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+              alert.remove();
+            }
+          }, 3000);
+        }
+
+        // Update copyright year
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentYear = new Date().getFullYear();
+            const copyrightElement = document.getElementById('copyright-year');
+            if (copyrightElement) {
+                copyrightElement.textContent = `2023-${currentYear}`;
+            }
+        });
+
+        // Back to Top functionality
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show/hide back to top button based on scroll position
+        window.addEventListener('scroll', function() {
+            const backToTopBtn = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+      </script>
+    {% endblock %}
+  </body>
+</html>

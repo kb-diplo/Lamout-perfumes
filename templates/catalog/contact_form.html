@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block extra_title %} - Custom Order{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col text-center mt-3">
+            <h2 class="logo-font">Custom Perfume Order</h2>
+            <hr class="w-50 mb-1">
+            <p class="text-muted">Tell us exactly what you want and we'll make it happen</p>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-dark text-white text-center py-3">
+                    <h4 class="mb-0">Place Your Custom Order</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" id="perfume-order-form">
+                        {% csrf_token %}
+                        
+                        <!-- Customer Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-muted mb-3">Customer Information</h5>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="customer_name" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone_number" class="form-label">Phone Number *</label>
+                                <input type="tel" class="form-control" id="phone_number" name="phone_number" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="location" class="form-label">Delivery Location *</label>
+                                <input type="text" class="form-control" id="location" name="location" placeholder="e.g., Nairobi, Githunguri, etc." required>
+                            </div>
+                        </div>
+
+                        <!-- Perfume Selection -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-muted mb-3">Perfume Details</h5>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="perfume_name" class="form-label">Perfume Name/Brand *</label>
+                                <input type="text" class="form-control" id="perfume_name" name="perfume_name" placeholder="e.g., Chanel No 5, Creed Aventus, Tom Ford Oud" required>
+                                <div class="form-text">Enter the specific perfume name or brand you want</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="gender_category" class="form-label">Category *</label>
+                                <select class="form-select" id="gender_category" name="gender_category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="men">Men's Perfume</option>
+                                    <option value="women">Women's Perfume</option>
+                                    <option value="unisex">Unisex</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="scent_type" class="form-label">Scent Type</label>
+                                <select class="form-select" id="scent_type" name="scent_type">
+                                    <option value="">Select Scent Type</option>
+                                    <option value="woody">Woody Scents</option>
+                                    <option value="fresh">Fresh Scents</option>
+                                    <option value="oriental">Oriental & Sexy</option>
+                                    <option value="floral">Floral & Fruity</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Package Options -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-muted mb-3">Package Options</h5>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">What would you like to order? *</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="ml_option" name="package_type" value="ml">
+                                            <label class="form-check-label" for="ml_option">
+                                                Milliliters (ML)
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="package_option" name="package_type" value="package">
+                                            <label class="form-check-label" for="package_option">
+                                                Full Package
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="both_option" name="package_type" value="both">
+                                            <label class="form-check-label" for="both_option">
+                                                Both ML & Package
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ML Specification -->
+                            <div class="col-12 mb-3" id="ml_specification" style="display: none;">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">ML Specification</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="ml_amount" class="form-label">How many ML?</label>
+                                                <input type="number" class="form-control" id="ml_amount" name="ml_amount" min="1" max="1000" placeholder="e.g., 50, 100, 200">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="ml_quantity" class="form-label">How many bottles?</label>
+                                                <input type="number" class="form-control" id="ml_quantity" name="ml_quantity" min="1" max="50" placeholder="e.g., 1, 2, 3" value="1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Package Specification -->
+                            <div class="col-12 mb-3" id="package_specification" style="display: none;">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Package Specification</h6>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="package_size" class="form-label">Package Size</label>
+                                                <select class="form-select" id="package_size" name="package_size">
+                                                    <option value="">Select Size</option>
+                                                    <option value="small">Small (30-50ml)</option>
+                                                    <option value="medium">Medium (75-100ml)</option>
+                                                    <option value="large">Large (125-200ml)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="package_quantity" class="form-label">How many packages?</label>
+                                                <input type="number" class="form-control" id="package_quantity" name="package_quantity" min="1" max="20" placeholder="e.g., 1, 2, 3" value="1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-muted mb-3">Additional Information</h5>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="special_requests" class="form-label">Special Requests or Notes</label>
+                                <textarea class="form-control" id="special_requests" name="special_requests" rows="4" placeholder="Any specific requirements, delivery instructions, or questions..."></textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="budget_range" class="form-label">Budget Range (KSH)</label>
+                                <select class="form-select" id="budget_range" name="budget_range">
+                                    <option value="">Select Budget Range</option>
+                                    <option value="1000-3000">KSH 1,000 - 3,000</option>
+                                    <option value="3000-5000">KSH 3,000 - 5,000</option>
+                                    <option value="5000-10000">KSH 5,000 - 10,000</option>
+                                    <option value="10000+">KSH 10,000+</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="delivery_urgency" class="form-label">Delivery Urgency</label>
+                                <select class="form-select" id="delivery_urgency" name="delivery_urgency">
+                                    <option value="">Select Urgency</option>
+                                    <option value="standard">Standard (3-7 days)</option>
+                                    <option value="urgent">Urgent (1-2 days)</option>
+                                    <option value="same_day">Same Day</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-dark btn-lg px-5">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Order Request
+                            </button>
+                            <div class="mt-3">
+                                <small class="text-muted">We'll contact you within 24 hours to confirm your order</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mlOption = document.getElementById('ml_option');
+    const packageOption = document.getElementById('package_option');
+    const bothOption = document.getElementById('both_option');
+    const mlSpec = document.getElementById('ml_specification');
+    const packageSpec = document.getElementById('package_specification');
+
+    function toggleSpecifications() {
+        // Reset display
+        mlSpec.style.display = 'none';
+        packageSpec.style.display = 'none';
+
+        // Show relevant sections
+        if (mlOption.checked || bothOption.checked) {
+            mlSpec.style.display = 'block';
+        }
+        if (packageOption.checked || bothOption.checked) {
+            packageSpec.style.display = 'block';
+        }
+    }
+
+    // Add event listeners
+    mlOption.addEventListener('change', toggleSpecifications);
+    packageOption.addEventListener('change', toggleSpecifications);
+    bothOption.addEventListener('change', toggleSpecifications);
+
+    // Handle mutual exclusivity for "both" option
+    bothOption.addEventListener('change', function() {
+        if (this.checked) {
+            mlOption.checked = false;
+            packageOption.checked = false;
+        }
+    });
+
+    mlOption.addEventListener('change', function() {
+        if (this.checked) {
+            bothOption.checked = false;
+        }
+    });
+
+    packageOption.addEventListener('change', function() {
+        if (this.checked) {
+            bothOption.checked = false;
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %} - Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col text-center mt-3">
+            <h2 class="logo-font">Shopping Cart</h2>
+            <hr class="w-50 mb-1">
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            {% if cart_items %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless">
+                        <thead class="text-black">
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Subtotal</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr id="cart-item-{{ item.id }}">
+                                <td class="p-3">
+                                    <p class="my-0"><strong>{{ item.product.name }}</strong></p>
+                                    <p class="my-0 small text-muted">
+                                        {% if item.is_custom_ml and item.custom_ml %}
+                                            {{ item.custom_ml }}ml (Custom Quantity)
+                                        {% else %}
+                                            Full Package
+                                        {% endif %}
+                                    </p>
+                                </td>
+                                <td class="py-3">
+                                    {% if item.is_custom_ml and item.custom_ml %}
+                                        <p class="my-0">KSH {{ item.product.ml_price|floatformat:2 }}/ml</p>
+                                    {% else %}
+                                        <p class="my-0">KSH {{ item.product.price|floatformat:2 }}</p>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3">
+                                    {% if item.is_custom_ml %}
+                                        <input type="number" 
+                                               class="form-control form-control-sm custom-ml-input" 
+                                               value="{{ item.custom_ml|floatformat:2 }}" 
+                                               min="0.1" 
+                                               step="0.1"
+                                               data-item_id="{{ item.id }}"
+                                               style="width: 80px; display: inline-block;">
+                                        <span class="ml-1">ml</span>
+                                    {% else %}
+                                        <div class="input-group input-group-sm" style="width: 120px;">
+                                            <div class="input-group-prepend">
+                                                <button class="decrement-qty btn btn-sm btn-outline-secondary" 
+                                                        type="button" 
+                                                        data-item_id="{{ item.id }}">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </div>
+                                            <input type="number"
+                                                   class="form-control form-control-sm qty_input text-center"
+                                                   value="{{ item.quantity }}" 
+                                                   min="1" 
+                                                   max="99"
+                                                   data-item_id="{{ item.id }}">
+                                            <div class="input-group-append">
+                                                <button class="increment-qty btn btn-sm btn-outline-secondary"
+                                                        type="button" 
+                                                        data-item_id="{{ item.id }}">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3">
+                                    <p class="my-0 item-subtotal" id="subtotal-{{ item.id }}">
+                                        KSH {{ item.total_price|floatformat:2 }}
+                                    </p>
+                                </td>
+                                <td class="py-3 text-right">
+                                    <button class="update-item btn btn-sm btn-outline-primary mr-1" 
+                                            data-item_id="{{ item.id }}" 
+                                            {% if not item.is_custom_ml %}style="display: none;"{% endif %}>
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                    <button class="remove-item btn btn-sm btn-outline-danger" 
+                                            data-item_id="{{ item.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="5" class="pt-5 text-right">
+                                    <h6><strong>Cart Total: KSH <span id="cart-total">{{ cart.total_price }}</span></strong></h6>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="text-right">
+                                    <a href="{% url 'catalog:ladies_perfumes' %}" class="btn btn-outline-black rounded-0 btn-lg">
+                                        <span class="icon">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </span>
+                                        <span class="text-uppercase">Keep Shopping</span>
+                                    </a>
+                                    <a href="{% url 'catalog:checkout' %}" class="btn btn-black rounded-0 btn-lg">
+                                        <span class="text-uppercase">Secure Checkout</span>
+                                        <span class="icon">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center">
+                    <h4>Your cart is empty</h4>
+                    <p class="text-muted">Add some perfumes to your cart to get started!</p>
+                    <a href="{% url 'catalog:ladies_perfumes' %}" class="btn btn-black rounded-0 btn-lg mt-3">
+                        <span class="text-uppercase">Shop Perfumes</span>
+                        <span class="icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Update quantity for full packages
+    const quantityInputs = document.querySelectorAll('.qty_input');
+    quantityInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const itemId = this.getAttribute('data-item_id');
+            const quantity = parseInt(this.value);
+            updateCartItem(itemId, { quantity: quantity });
+        });
+    });
+
+    // Handle custom ml input changes
+    const customMlInputs = document.querySelectorAll('.custom-ml-input');
+    customMlInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const itemId = this.getAttribute('data-item_id');
+            const customMl = parseFloat(this.value);
+            if (customMl >= 0.1) {
+                updateCartItem(itemId, { custom_ml: customMl });
+            } else {
+                this.value = 0.1;
+            }
+        });
+    });
+
+    // Show update button when custom ml changes
+    customMlInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const itemId = this.getAttribute('data-item_id');
+            const updateBtn = document.querySelector(`button.update-item[data-item_id="${itemId}"]`);
+            if (updateBtn) updateBtn.style.display = 'inline-block';
+        });
+    });
+
+    // Update button click handler
+    const updateButtons = document.querySelectorAll('.update-item');
+    updateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item_id');
+            const customMlInput = document.querySelector(`.custom-ml-input[data-item_id="${itemId}"]`);
+            if (customMlInput) {
+                const customMl = parseFloat(customMlInput.value);
+                if (customMl >= 0.1) {
+                    updateCartItem(itemId, { custom_ml: customMl });
+                }
+            }
+            this.style.display = 'none';
+        });
+    });
+
+    // Increment quantity for full packages
+    const incrementButtons = document.querySelectorAll('.increment-qty');
+    incrementButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item_id');
+            const input = document.querySelector(`.qty_input[data-item_id="${itemId}"]`);
+            if (input) {
+                let quantity = parseInt(input.value) + 1;
+                if (quantity > 99) quantity = 99;
+                input.value = quantity;
+                updateCartItem(itemId, { quantity: quantity });
+            }
+        });
+    });
+
+    // Decrement quantity for full packages
+    const decrementButtons = document.querySelectorAll('.decrement-qty');
+    decrementButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item_id');
+            const input = document.querySelector(`.qty_input[data-item_id="${itemId}"]`);
+            if (input) {
+                let quantity = parseInt(input.value) - 1;
+                if (quantity < 1) quantity = 1;
+                input.value = quantity;
+                updateCartItem(itemId, { quantity: quantity });
+            }
+        });
+    });
+    
+    // Handle remove item button clicks
+    const removeButtons = document.querySelectorAll('.remove-item');
+    removeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.getAttribute('data-item_id');
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+                removeCartItem(itemId);
+            }
+        });
+    });
+
+    function updateCartItem(itemId, data) {
+        fetch(`/catalog/cart/update/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateCartTotal();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function removeCartItem(itemId) {
+        fetch(`/catalog/cart/remove/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const itemRow = document.getElementById(`cart-item-${itemId}`);
+                if (itemRow) {
+                    itemRow.remove();
+                }
+
+                // Update cart total and item count from the response
+                const cartTotalEl = document.getElementById('cart-total');
+                if (cartTotalEl) {
+                    cartTotalEl.textContent = parseFloat(data.cart_total_price).toFixed(2);
+                }
+
+                const cartCountEl = document.querySelector('.cart-count');
+                if (cartCountEl) {
+                    cartCountEl.textContent = data.cart_total;
+                }
+
+                // Check if cart is now empty
+                const cartItemsContainer = document.querySelector('table tbody');
+                if (cartItemsContainer && cartItemsContainer.children.length <= 2) { // 2 for total and button rows
+                    window.location.reload(); // Reload to show the 'empty cart' message
+                }
+
+                showMessage(data.message || 'Item removed from cart', 'success');
+            } else {
+                showMessage(data.error || 'Error removing item from cart', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error removing item:', error);
+            showMessage('There was an issue removing the item from your cart.', 'danger');
+        });
+    }
+
+    function updateCartTotal() {
+        // Fetch the latest cart data
+        fetch('/cart/')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const cartTotalElement = doc.querySelector('#cart-total');
+                
+                if (cartTotalElement) {
+                    // Update the cart total
+                    const currentCartTotal = document.querySelector('#cart-total');
+                    if (currentCartTotal) {
+                        currentCartTotal.textContent = cartTotalElement.textContent;
+                    }
+                    
+                    // Update the cart count in the navbar if it exists
+                    const cartCountElement = document.querySelector('.cart-count');
+                    const newCartCountElement = doc.querySelector('.cart-count');
+                    if (cartCountElement && newCartCountElement) {
+                        cartCountElement.textContent = newCartCountElement.textContent;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error updating cart total:', error);
+                // Fallback to page reload if there's an error
+                window.location.reload();
+            });
+    }
+
+    function showMessage(message, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        messageDiv.role = 'alert';
+        messageDiv.innerHTML = `
+            ${message}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        `;
+        const container = document.querySelector('.container');
+        if (container) {
+            container.insertBefore(messageDiv, container.firstChild);
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    }
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}

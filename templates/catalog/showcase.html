@@ -1,0 +1,573 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %} - Products{% endblock %}
+
+{% block extra_css %}
+  <style>
+    .showcase-hero {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%), 
+                  url('https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?ixlib=rb-4.0.3') center/cover;
+      padding: 100px 0;
+      color: white;
+      text-align: center;
+    }
+    
+    .perfume-card {
+      border: none;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      height: 100%;
+    }
+    
+    .perfume-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    }
+    
+    .perfume-image {
+      height: 250px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .perfume-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .price-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255,255,255,0.9);
+      color: #667eea;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    
+    .filter-section {
+      background: #f8f9fa;
+      padding: 30px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .filter-btn {
+      margin: 5px;
+      border-radius: 25px;
+      padding: 10px 25px;
+      border: 2px solid #667eea;
+      background: white;
+      color: #667eea;
+      transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: #667eea;
+      color: white;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="showcase-hero">
+  <div class="container">
+    {% if category_name %}
+      <h1 class="display-4 fw-bold mb-4">{{ category_name }}</h1>
+    {% else %}
+      <h1 class="display-4 fw-bold mb-4">Our Perfume Collection</h1>
+      <p class="lead">Discover authentic fragrances from the world's finest perfume houses</p>
+      <p class="lead fst-italic">We sell full packages and also by custom milliliter (ml) portions.</p>
+    {% endif %}
+  </div>
+</section>
+
+{% if not category_name %}
+<!-- Search and Filter Section -->
+<section class="filter-section">
+  <div class="container">
+    <!-- Search Bar -->
+    <div class="row mb-4">
+      <div class="col-lg-6 mx-auto">
+        <form method="GET" action="{% url 'catalog:showcase' %}" class="search-form">
+          <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search_query }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <h5 class="text-center mb-3">Filter by Category</h5>
+        <div class="text-center">
+          <a href="?category=all" class="btn btn-sm filter-btn {% if not current_filters.category or current_filters.category == 'all' %}active{% endif %}">
+            All
+          </a>
+          {% for value, label in filter_options.categories %}
+            <a href="?category={{ value }}" class="btn btn-sm filter-btn {% if current_filters.category == value %}active{% endif %}">
+              {{ label }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Price Range Filter -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <h5 class="text-center mb-3">Price Range</h5>
+        <div class="text-center">
+          <a href="?price_range=all" class="btn btn-sm filter-btn {% if not current_filters.price_range or current_filters.price_range == 'all' %}active{% endif %}">
+            All Prices
+          </a>
+          <a href="?price_range=budget" class="btn btn-sm filter-btn {% if current_filters.price_range == 'budget' %}active{% endif %}">
+            Under Ksh 1,000
+          </a>
+          <a href="?price_range=mid_range" class="btn btn-sm filter-btn {% if current_filters.price_range == 'mid_range' %}active{% endif %}">
+            Ksh 1,000 - 3,000
+          </a>
+          <a href="?price_range=premium" class="btn btn-sm filter-btn {% if current_filters.price_range == 'premium' %}active{% endif %}">
+            Over Ksh 3,000
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sort Options -->
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex justify-content-end">
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              Sort by: {{ current_filters.sort|title|default:'Name (A-Z)' }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+              <li><a class="dropdown-item {% if current_filters.sort == 'name' or not current_filters.sort %}active{% endif %}" href="?sort=name">Name (A-Z)</a></li>
+              <li><a class="dropdown-item {% if current_filters.sort == 'price_low' %}active{% endif %}" href="?sort=price_low">Price (Low to High)</a></li>
+              <li><a class="dropdown-item {% if current_filters.sort == 'price_high' %}active{% endif %}" href="?sort=price_high">Price (High to Low)</a></li>
+              <li><a class="dropdown-item {% if current_filters.sort == 'newest' %}active{% endif %}" href="?sort=newest">Newest First</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Products Grid -->
+<section class="py-5">
+  <div class="container">
+    {% csrf_token %}
+    
+    {% if products %}
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+          <div class="col">
+            <div class="card h-100 perfume-card">
+              <div class="perfume-image">
+                {% if product.image %}
+                  <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                  <i class="fas fa-spray-can"></i>
+                {% endif %}
+                <span class="price-badge">Ksh {{ product.price|floatformat:2 }}</span>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-primary">{{ product.get_category_display }}</span>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-top-0">
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addToCartModal"
+                        data-product-id="{{ product.id }}" 
+                        data-product-name="{{ product.name }}"
+                        data-product-price="{{ product.price }}"
+                        data-ml-price="{{ product.ml_price }}"
+                        data-stock="{{ product.stock_quantity }}">
+                  <i class="fas fa-shopping-cart me-1"></i> Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <h3>Our Perfume Collection</h3>
+        <p class="text-muted mb-4">We're currently updating our collection. Please check back soon for our latest fragrances.</p>
+        <a href="{% url 'catalog:contact_form' %}" class="btn btn-outline-primary">Contact Us for Custom Orders</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Add to Cart Modal -->
+<div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addToCartModalLabel">Add to Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="product-name mb-4"></h6>
+        
+        <div class="quantity-option mb-3 active" id="fullPackageOption">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="quantityType" id="fullPackage" value="full" checked>
+            <label class="form-check-label fw-bold" for="fullPackage">
+              Full Package
+            </label>
+          </div>
+          <div class="ms-4 mt-2">
+            <div class="d-flex align-items-center">
+              <div class="input-group input-group-sm" style="width: 120px;">
+                <button class="btn btn-outline-secondary minus-btn" type="button">-</button>
+                <input type="number" class="form-control text-center quantity-input" value="1" min="1" max="10">
+                <button class="btn btn-outline-secondary plus-btn" type="button">+</button>
+              </div>
+              <span class="ms-2">× <span class="price-display"></span> each</span>
+            </div>
+            <div class="stock-info text-muted small mt-1"></div>
+          </div>
+        </div>
+        
+        <div class="quantity-option" id="customMlOption">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="quantityType" id="customMl" value="custom">
+            <label class="form-check-label fw-bold" for="customMl">
+              Custom Quantity (ml)
+            </label>
+          </div>
+          <div class="ms-4 mt-2">
+            <div class="d-flex align-items-center">
+              <div class="input-group input-group-sm" style="width: 150px;">
+                <input type="number" class="form-control custom-ml-input" value="10" min="1" step="1">
+                <span class="input-group-text">ml</span>
+              </div>
+              <span class="ms-2">× <span class="ml-price-display"></span>/ml</span>
+            </div>
+            <div class="custom-total mt-2">
+              Total: <span class="fw-bold">KSH <span id="customMlTotal">0.00</span></span>
+              <div class="ml-preview">
+                (Approx. <span id="mlToBottles">0</span> x 100ml bottles)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="addToCartBtn">
+          <i class="fas fa-cart-plus me-1"></i> Add to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" id="backToTop">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Back to top functionality
+  const backToTopBtn = document.getElementById('backToTop');
+  if (backToTopBtn) {
+    window.addEventListener('scroll', function() {
+      if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    });
+    
+    backToTopBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+  
+  // Filter functionality
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const categorySections = document.querySelectorAll('.category-section');
+  const productCards = document.querySelectorAll('.perfume-card');
+  
+  if (filterBtns.length > 0) {
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Update active button
+        filterBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const filter = this.getAttribute('data-filter');
+        
+        if (filter === 'all') {
+          // Show all categories and products
+          categorySections.forEach(section => {
+            section.style.display = 'block';
+          });
+          productCards.forEach(card => {
+            card.closest('.col-lg-3').style.display = 'block';
+          });
+        } else {
+          // Filter by category
+          categorySections.forEach(section => {
+            const sectionCategory = section.getAttribute('data-category');
+            section.style.display = sectionCategory === filter ? 'block' : 'none';
+          });
+          
+          // Also filter individual cards for mixed categories
+          productCards.forEach(card => {
+            const cardCategory = card.getAttribute('data-category');
+            card.closest('.col-lg-3').style.display = cardCategory === filter ? 'block' : 'none';
+          });
+        }
+      });
+    });
+  }
+
+  // Add to Cart Modal Functionality
+  const addToCartModal = document.getElementById('addToCartModal');
+  if (addToCartModal) {
+    const modal = new bootstrap.Modal(addToCartModal);
+    let currentProduct = null;
+    
+    // Function to update custom ml total and preview
+    function updateCustomMlTotal() {
+      if (!currentProduct) return;
+      
+      const customMlInput = addToCartModal.querySelector('.custom-ml-input');
+      if (!customMlInput) return;
+      
+      const ml = parseInt(customMlInput.value) || 0;
+      const total = (ml * currentProduct.mlPrice).toFixed(2);
+      const bottles = Math.ceil(ml / 100);
+      
+      const customMlTotalEl = addToCartModal.querySelector('#customMlTotal');
+      const mlToBottlesEl = addToCartModal.querySelector('#mlToBottles');
+      
+      if (customMlTotalEl) customMlTotalEl.textContent = total;
+      if (mlToBottlesEl) mlToBottlesEl.textContent = bottles;
+      
+      // Update max based on stock
+      const maxMl = currentProduct.stock * 100;
+      if (ml > maxMl) {
+        customMlInput.value = maxMl;
+        updateCustomMlTotal();
+      }
+    }
+    
+    // Function to handle add to cart submission
+    function handleAddToCart() {
+      if (!currentProduct) return;
+      
+      const addToCartBtn = addToCartModal.querySelector('#addToCartBtn');
+      const isCustomMl = addToCartModal.querySelector('#customMl')?.checked || false;
+      let quantity = 1;
+      let customMl = 0;
+      
+      if (isCustomMl) {
+        customMl = parseInt(addToCartModal.querySelector('.custom-ml-input')?.value) || 0;
+        if (customMl < 1) {
+          alert('Please enter a valid quantity');
+          return;
+        }
+      } else {
+        quantity = parseInt(addToCartModal.querySelector('.quantity-input')?.value) || 1;
+      }
+      
+      // Prepare data as JSON
+      const requestData = {
+        product_id: currentProduct.id,
+        quantity: quantity,
+        is_custom_ml: isCustomMl,
+        custom_ml: isCustomMl ? customMl : 0
+      };
+      
+      // Get CSRF token from cookies
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      
+      const csrftoken = getCookie('csrftoken');
+      if (!csrftoken) {
+        console.error('CSRF token not found');
+        alert('Please refresh the page and try again.');
+        return;
+      }
+      
+      // Show loading state
+      const originalBtnText = addToCartBtn.innerHTML;
+      addToCartBtn.disabled = true;
+      addToCartBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+      
+      // Send AJAX request
+      fetch("{% url 'catalog:add_to_cart' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(requestData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Show success message
+          const toastEl = document.getElementById('addToCartToast');
+          if (toastEl) {
+            const toast = new bootstrap.Toast(toastEl);
+            const toastBody = toastEl.querySelector('.toast-body');
+            if (toastBody) {
+              toastBody.textContent = data.message || 'Item added to cart';
+            }
+            toast.show();
+          } else {
+            // Fallback to alert if toast is not available
+            alert(data.message || 'Item added to cart');
+          }
+          
+          // Update cart count
+          const cartCount = document.getElementById('cart-count');
+          if (cartCount && data.cart_count !== undefined) {
+            cartCount.textContent = data.cart_count;
+          }
+          
+          // Close modal
+          modal.hide();
+        } else {
+          throw new Error(data.message || 'Failed to add item to cart');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert(error.message || 'An error occurred while adding the item to cart');
+      })
+      .finally(() => {
+        // Reset button state
+        addToCartBtn.disabled = false;
+        addToCartBtn.innerHTML = originalBtnText;
+      });
+    }
+    
+    // When modal is shown
+    addToCartModal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+      currentProduct = {
+        id: button.getAttribute('data-product-id'),
+        name: button.getAttribute('data-product-name'),
+        price: parseFloat(button.getAttribute('data-product-price')),
+        mlPrice: parseFloat(button.getAttribute('data-ml-price')),
+        stock: parseInt(button.getAttribute('data-stock'))
+      };
+      
+      // Update modal content
+      const productNameEl = addToCartModal.querySelector('.product-name');
+      const priceDisplayEl = addToCartModal.querySelector('.price-display');
+      const mlPriceDisplayEl = addToCartModal.querySelector('.ml-price-display');
+      const stockInfoEl = addToCartModal.querySelector('.stock-info');
+      
+      if (productNameEl) productNameEl.textContent = currentProduct.name;
+      if (priceDisplayEl) priceDisplayEl.textContent = `KSH ${currentProduct.price.toFixed(2)}`;
+      if (mlPriceDisplayEl) mlPriceDisplayEl.textContent = `KSH ${currentProduct.mlPrice.toFixed(2)}`;
+      if (stockInfoEl) stockInfoEl.textContent = `${currentProduct.stock} in stock`;
+      
+      // Reset form
+      const quantityInput = addToCartModal.querySelector('.quantity-input');
+      const customMlInput = addToCartModal.querySelector('.custom-ml-input');
+      if (quantityInput) quantityInput.value = '1';
+      if (customMlInput) customMlInput.value = '10';
+      
+      updateCustomMlTotal();
+    });
+    
+    // Quantity controls
+    const minusBtn = addToCartModal.querySelector('.minus-btn');
+    const plusBtn = addToCartModal.querySelector('.plus-btn');
+    const quantityInput = addToCartModal.querySelector('.quantity-input');
+    
+    if (minusBtn && quantityInput) {
+      minusBtn.addEventListener('click', function() {
+        let value = parseInt(quantityInput.value) - 1;
+        if (value < 1) value = 1;
+        quantityInput.value = value;
+      });
+    }
+    
+    if (plusBtn && quantityInput) {
+      plusBtn.addEventListener('click', function() {
+        if (!currentProduct) return;
+        let value = parseInt(quantityInput.value) + 1;
+        if (value > currentProduct.stock) value = currentProduct.stock;
+        quantityInput.value = value;
+      });
+    }
+    
+    // Update custom ml total when input changes
+    const customMlInput = addToCartModal.querySelector('.custom-ml-input');
+    if (customMlInput) {
+      customMlInput.addEventListener('input', updateCustomMlTotal);
+    }
+    
+    // Toggle between quantity options
+    const quantityRadios = addToCartModal.querySelectorAll('input[name="quantityType"]');
+    quantityRadios.forEach(radio => {
+      radio.addEventListener('change', function() {
+        const fullPackageOption = addToCartModal.querySelector('#fullPackageOption');
+        const customMlOption = addToCartModal.querySelector('#customMlOption');
+        
+        if (fullPackageOption) {
+          fullPackageOption.classList.toggle('active', this.value === 'full');
+        }
+        if (customMlOption) {
+          customMlOption.classList.toggle('active', this.value === 'custom');
+        }
+      });
+    });
+    
+    // Add to cart button click
+    const addToCartBtn = addToCartModal.querySelector('#addToCartBtn');
+    if (addToCartBtn) {
+      addToCartBtn.addEventListener('click', handleAddToCart);
+    }
+  }
+});
+</script>
+
+{% endblock %}

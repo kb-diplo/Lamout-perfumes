@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %} - Order Submitted{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col text-center mt-3">
+            <h2 class="logo-font text-success">Order Submitted Successfully!</h2>
+            <hr class="w-50 mb-1">
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h3 class="mb-3">Thank you{% if customer_name %}, {{ customer_name }}{% endif %}!</h3>
+                    <p class="lead mb-4">Your perfume order has been prepared and is ready to be sent via WhatsApp.</p>
+                    
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Next Step:</strong> Click the WhatsApp button below to send your order details to us. We'll respond within 24 hours with pricing and availability.
+                    </div>
+                    
+                    {% if whatsapp_url %}
+                    <div class="mb-4">
+                        <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-success btn-lg px-5 py-3">
+                            <i class="fab fa-whatsapp me-2"></i>Send Order via WhatsApp
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row mt-5">
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-clock text-primary mb-2" style="font-size: 2rem;"></i>
+                                <h5>Quick Response</h5>
+                                <p class="text-muted">We respond within 24 hours</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-shield-alt text-primary mb-2" style="font-size: 2rem;"></i>
+                                <h5>Quality Guaranteed</h5>
+                                <p class="text-muted">100% authentic perfumes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="text-center">
+                                <i class="fas fa-shipping-fast text-primary mb-2" style="font-size: 2rem;"></i>
+                                <h5>Fast Delivery</h5>
+                                <p class="text-muted">Quick delivery to your location</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'showcase' %}" class="btn btn-outline-dark me-2">Browse More Perfumes</a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %} - Ladies' Perfumes{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col text-center mt-3">
+            <h2 class="logo-font">Ladies' Perfume Collection</h2>
+            <hr class="w-50 mb-1">
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 offset-lg-2">
+            <div class="image-container my-5">
+                <img class="card-img-top img-fluid" src="{{ MEDIA_URL }}LADIES LAMOUT.png" alt="Ladies' Perfumes">
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="product-details-container mb-5 mt-md-5">
+                <div class="mb-3">
+                    <h3 class="mb-0">LADIES</h3>
+                    <p class="lead mb-0 text-left font-weight-bold">Contact: 0716301107</p>
+                </div>
+
+                <div class="text-center">
+                    <p class="lead mb-4">Discover our exquisite collection of ladies' fragrances</p>
+                    <p class="text-muted mb-4">From floral and fruity to woody and oriental scents - find your perfect signature fragrance</p>
+                    
+                    <a href="{% url 'catalog:showcase' %}" class="btn btn-primary rounded-0 text-uppercase me-3 mb-3">
+                        <i class="fas fa-eye me-2"></i>BROWSE ALL PRODUCTS
+                    </a>
+                    <a href="https://wa.me/254716301107" target="_blank" class="btn btn-success rounded-0 text-uppercase mb-3">
+                        <span class="text-uppercase">Order via WhatsApp</span>
+                        <span class="icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </span>
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="text-muted small">
+                        <i class="fas fa-phone me-2"></i>Contact: +254 716 301 107<br>
+                        <i class="fas fa-clock me-2"></i>Available 24/7 via WhatsApp
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to all "Add to Cart" buttons
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const productData = {
+                product_name: this.dataset.productName,
+                category: this.dataset.category,
+                scent_type: this.dataset.scentType,
+                price: parseFloat(this.dataset.price),
+                volume_ml: parseInt(this.dataset.volumeMl),
+                quantity: 1
+            };
+            
+            // Disable button and show loading
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+            
+            // Add to cart
+            addToCart(productData);
+            
+            // Re-enable button after 2 seconds
+            setTimeout(() => {
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-plus"></i> Add to Cart';
+            }, 2000);
+        });
+    });
+});
+</script>
+{% endblock %}

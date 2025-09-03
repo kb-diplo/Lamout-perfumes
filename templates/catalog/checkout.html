@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %} - Checkout{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col text-center mt-3">
+            <h2 class="logo-font">Checkout</h2>
+            <hr class="w-50 mb-1">
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-6 order-lg-last mb-5">
+            <p class="text-muted">Order Summary</p>
+            {% for item in cart_items %}
+            <div class="row">
+                <div class="col-7 offset-2">
+                    <p class="my-0">{{ item.product.name }}</p>
+                    <p class="my-0 small text-muted">Qty: {{ item.quantity }}</p>
+                </div>
+                <div class="col-3 text-right">
+                    <p class="my-0">KSH {{ item.total_price }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <hr class="my-0">
+            <div class="row text-black text-right">
+                <div class="col-7 offset-2">
+                    <p class="my-0">Order Total:</p>
+                </div>
+                <div class="col-3">
+                    <p class="my-0"><strong>KSH {{ cart.total_price }}</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <p class="text-muted">Please fill in your details to complete your order</p>
+            <form action="{% url 'catalog:checkout' %}" method="POST" id="checkout-form">
+                {% csrf_token %}
+                <fieldset class="rounded px-3 mb-5">
+                    <legend class="fieldset-label small text-black px-2 w-auto">Customer Details</legend>
+                    <div class="mb-3">
+                        <label for="id_customer_name" class="form-label">Full Name *</label>
+                        <input type="text" class="form-control" name="customer_name" id="id_customer_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_phone_number" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" name="phone_number" id="id_phone_number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" name="email" id="id_email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_location" class="form-label">Delivery Location *</label>
+                        <input type="text" class="form-control" name="location" id="id_location" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_special_requests" class="form-label">Special Requests</label>
+                        <textarea class="form-control" name="special_requests" id="id_special_requests" rows="3" placeholder="Any special delivery instructions or requests..."></textarea>
+                    </div>
+                </fieldset>
+
+                <div class="submit-button text-right mt-5 mb-2">
+                    <a href="{% url 'catalog:view_cart' %}" class="btn btn-outline-black rounded-0">
+                        <span class="icon">
+                            <i class="fas fa-chevron-left"></i>
+                        </span>
+                        <span class="font-weight-bold">Adjust Cart</span>
+                    </a>
+                    <button id="submit-button" class="btn btn-black rounded-0">
+                        <span class="font-weight-bold">Complete Order via WhatsApp</span>
+                        <span class="icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="btt-button shadow-sm rounded-0 border border-black">
+    <a class="btt-link d-flex h-100">
+        <i class="fas fa-arrow-up text-black mx-auto my-auto"></i>
+    </a>
+</div>
+
+<script>
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    document.getElementById('submit-button').innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span class="font-weight-bold">Processing...</span>
+    `;
+    document.getElementById('submit-button').disabled = true;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,33 @@
+<li class="list-inline-item dropdown d-none d-md-block d-lg-none">
+  <button type="button" class="btn btn-nav-dp" data-bs-toggle="dropdown" aria-expanded="false" aria-label="user account">
+    <span class="icon text-lv">
+      <i class="fa-solid fa-user icon"></i>
+    </span>
+  </button>
+  <ul class="dropdown-menu text-dp" id="user-options-mobile">
+    <li class="text-center">
+      <p class=" text-dp text-uppercase text-center">Welcome to Lamout Perfume</p>
+    </li>
+    <li>
+      <hr class="text-lv canvas-hr my-0">
+    </li>
+    <li class="py-2 text-center fs-6">
+      <a class="dropdown-item py-3" href="{% url 'contact_form' %}">Order Perfumes</a>
+    </li>
+    <li>
+      <hr class="text-lv canvas-hr my-0">
+    </li>
+  </ul>
+</li>
+<li class="list-inline-item d-block d-lg-none dropdown">
+  <button class="btn btn-nav-dp" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="view shopping bag">
+    <span class="position-relative">
+      <i class="fa-solid fa-bag-shopping icon text-lv"></i>
+    </span>
+  </button>
+  <div class="dropdown-menu px-3 bag-sm" aria-labelledby="shopping-bag-button">
+    <div>
+      {% include 'includes/bag_dropdown.html' %}
+    </div>
+  </div>
+</li>

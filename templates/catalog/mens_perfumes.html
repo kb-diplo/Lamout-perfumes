@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_title %} - Men's Perfumes{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col text-center mt-3">
+            <h2 class="logo-font">Men's Perfume Collection</h2>
+            <hr class="w-50 mb-1">
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 offset-lg-2">
+            <div class="image-container my-5">
+                <img class="card-img-top img-fluid" src="{{ MEDIA_URL }}MEN LAMOUT.png" alt="Men's Perfumes">
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="product-details-container mb-5 mt-md-5 text-center">
+                <div class="mb-4">
+                    <h3 class="mb-3">FOR MEN</h3>
+                    <p class="lead mb-4">Discover our premium collection of men's fragrances</p>
+                    <p class="text-muted mb-4">From woody and fresh to oriental scents - find your signature fragrance</p>
+                </div>
+
+                <div class="text-center">
+                    <a href="{% url 'catalog:showcase' %}" class="btn btn-primary rounded-0 text-uppercase me-3 mb-3">
+                        <span class="text-uppercase">Browse All Products</span>
+                        <span class="icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </span>
+                    </a>
+                    <a href="https://wa.me/254716301107" target="_blank" class="btn btn-success rounded-0 text-uppercase mb-3">
+                        <span class="text-uppercase">Order via WhatsApp</span>
+                        <span class="icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </span>
+                    </a>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="text-muted small">
+                        <i class="fas fa-phone me-2"></i>Contact: +254 716 301 107<br>
+                        <i class="fas fa-clock me-2"></i>Available 24/7 via WhatsApp
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

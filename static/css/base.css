@@ -1,0 +1,581 @@
+@import "./constants.css";
+
+/* ------------- General Styles ------------- */
+html,
+body {
+  overflow-x: hidden !important;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.bg-transparent {
+  background-color: var(--transparent);
+}
+
+.bg-dp {
+  background-color: var(--dark-purple) !important;
+}
+
+.bg-dp-60 {
+  background-color: var(--dark-purple-60) !important;
+}
+
+.bg-lv-80 {
+  background-color: var(--lavender-80) !important;
+}
+
+.bg-lv-60 {
+  background-color: var(--lavender-60) !important;
+}
+
+.bg-lv-40 {
+  background-color: var(--lavender-40) !important;
+}
+
+.bg-lv-20 {
+  background-color: var(--lavender-20) !important;
+}
+
+.text-dp {
+  color: var(--dark-purple) !important;
+}
+
+.text-dp-80 {
+  color: var(--dark-purple-80) !important;
+}
+
+.text-lv {
+  color: var(--lavender) !important;
+}
+
+.text-transparent {
+  color: var(--transparent) !important;
+}
+
+.border-dp {
+  border-color: var(--dark-purple) !important;
+}
+
+.border-lv {
+  border-color: var(--lavender) !important;
+}
+
+.border-transparent {
+  border-color: var(--transparent) !important;
+}
+
+.btn-dp {
+  color: var(--white);
+  background-color: var(--dark-purple);
+  border-color: var(--dark-purple);
+}
+
+.btn-dp:hover {
+  color: var(--dark-purple);
+  background-color: var(--lavender);
+  border-color: var(--lavender);
+}
+
+.btn-outline-dp {
+  color: var(--dark-purple) !important;
+  border-color: var(--dark-purple) !important;
+}
+
+.btn-outline-dp:hover {
+  color: var(--dark-purple);
+  background-color: var(--lavender);
+  border-color: var(--lavender);
+}
+
+.btn-check:active + .btn-outline-dp,
+.btn-check:checked + .btn-outline-dp,
+.btn-outline-dp.active,
+.btn-outline-dp.dropdown-toggle.show,
+.btn-outline-dp:active {
+  color: var(--white) !important;
+  background-color: var(--dark-purple) !important;
+  border-color: var(--dark-purple) !important;
+}
+
+.btn-nav-dp {
+  color: var(--lavender) !important;
+  background-color: var(--dark-purple) !important;
+  border-color: var(--dark-purple) !important;
+}
+
+.btn-nav-dp:hover,
+.btn-nav-dp:active {
+  color: var(--lavender) !important;
+  background-color: var(--white) !important;
+  border-color: var(--white) !important;
+}
+
+.btn-check:active + .btn-nav-dp,
+.btn-check:checked + .btn-nav-dp,
+.btn-nav-dp.active,
+.btn-nav-dp.show,
+.btn-nav-dp:active {
+  color: var(--lavender) !important;
+  background-color: var(--white) !important;
+  border-color: var(--dark-purple) !important;
+}
+
+.btn-outline-lv {
+  color: var(--dark-purple) !important;
+  border-color: var(--lavender) !important;
+}
+
+.btn-outline-lv:hover {
+  border-color: var(--dark-purple) !important;
+}
+
+.btn-check:focus + .btn-outline-lv,
+.btn:focus + .btn-outline-lv,
+.form-control:focus {
+  outline: 0 !important;
+  box-shadow: 0 0 0 0.25rem var(--lavender-40) !important;
+}
+
+.btn-check:active + .btn-outline-lv,
+.btn-check:checked + .btn-outline-lv,
+.btn-outline-lv.active,
+.btn-outline-lv.dropdown-toggle.show,
+.btn-outline-lv:active {
+  color: var(--dark-purple) !important;
+  background-color: var(--lavender) !important;
+  border-color: var(--lavender) !important;
+}
+
+.form-control:focus {
+  color: var(--dark-purple);
+  border-color: var(--transparent);
+}
+
+.header-displace {
+  height: 72px;
+}
+
+.dropdown-hr {
+  height: 0.3rem !important;
+}
+
+.dropdown-item.active-custom,
+.dropdown-item:active {
+  color: white;
+  text-decoration: none;
+  background-color: var(--dark-purple) !important;
+}
+
+.dropdown-header {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1rem;
+  clear: both;
+  font-weight: 400;
+  text-align: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+
+.list-group-item.active-custom {
+  z-index: 2;
+  color: #fff !important;
+  background-color: var(--dark-purple) !important;
+  border-color: var(--dark-purple) !important;
+}
+
+/* ---------------- Accordion override ---------------- */
+
+.accordion-button:not(.collapsed) {
+  color: var(--dark-purple) !important;
+  background-color: var(--lavender-40) !important;
+  box-shadow: inset 0 -1px 0 var(--lavender-60) !important;
+}
+
+.accordion-button:focus {
+  z-index: 3;
+  border-color: var(--lavender) !important;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem var(--lavender-20) !important;
+}
+
+/* ---------------- Navigation ---------------- */
+
+.logo-text {
+  font-family: "Petit Formal Script", cursive;
+}
+
+.search-btn {
+  color: var(--transparent) !important;
+  border-color: var(--transparent) !important;
+}
+
+.icon {
+  font-size: 2rem;
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+}
+
+#main-nav .container-fluid {
+  padding-right: 0 !important;
+}
+
+#offer-banner h4 {
+  margin-bottom: 0 !important;
+}
+
+.canvas-hr {
+  height: 2px !important;
+}
+
+#user-options {
+  width: 250px;
+  left: -100px;
+}
+
+#bag-lg,
+#bag-md,
+.bag-sm {
+  width: 420px;
+}
+
+.dropdown-menu[data-bs-popper].bag-sm {
+  top: 100%;
+  right: 0;
+  left: auto;
+  margin-top: 0.125rem;
+}
+
+.remove-item {
+  cursor: pointer;
+}
+
+.dropdown-bag-scroll {
+  height: 30vh;
+  overflow-y: auto;
+}
+
+#user-overlay {
+  z-index: 1056;
+  position: relative;
+}
+
+#user-overlay .dropdown-item {
+  z-index: 1057;
+  position: relative;
+  background-color: white;
+}
+
+#user-overlay .dropdown-item:hover {
+  background-color: #f8f9fa;
+  z-index: 1057;
+}
+
+#user-overlay > li {
+  padding-right: 16px;
+  padding-left: 16px;
+}
+
+.navbar-toggler {
+  border-color: var(--lavender) !important;
+}
+
+.dropdown-item:active {
+  background-color: var(--lavender-60) !important;
+}
+
+#search-container .form-control {
+  border: 0;
+}
+
+.shopping-bag-dropdown img {
+  width: 100%;
+  object-fit: contain;
+}
+
+/* ---------------- Toasts ---------------- */
+
+.message-container {
+  position: fixed;
+  top: 72px;
+  right: 15px;
+  z-index: 99999999;
+  /* margin-right: 80px; */
+}
+
+.custom-toast {
+  overflow: visible;
+}
+
+.toast-capper {
+  height: 2px;
+}
+
+.bag-toast-container {
+  max-height: 190px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ---------------- Form input ---------------- */
+
+.StripeElement,
+.stripe-style-input {
+  box-sizing: border-box;
+  height: 40px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background-color: white;
+  box-shadow: 0 1px 3px 0 var(--lavender-20);
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus,
+.stripe-style-input:focus,
+.stripe-style-input:active {
+  box-shadow: 0 1px 3px 0 var(--lavender-20);
+}
+
+.StripeElement--webkit-autofill {
+  background-color: var(--lavender-20) !important;
+}
+
+.stripe-style-input::placeholder {
+  color: var(--dark-purple-60);
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file input[type="file"] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.custom-checkbox .custom-control-label::before {
+  border-radius: 0;
+  border-color: #dc3545;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  border-radius: 0;
+}
+
+textarea {
+  height: 150px !important;
+}
+
+select {
+  height: 50px !important;
+}
+
+/* ---------------- Footer ---------------- */
+
+.footer-heading {
+  display: block;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  transition: none;
+}
+
+a.footer-heading:hover {
+  color: var(--lavender);
+}
+
+.default-hr {
+  width: 66vw;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid var(--lavender);
+}
+
+.btn-transparent {
+  width: 66vw;
+}
+
+.btn-transparent .btn-check:focus + .btn,
+.btn:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem var(--lavender-40);
+}
+
+.btn-transparent:hover {
+  color: var(--lavender) !important;
+}
+
+.btn-transparent h4 {
+  margin-bottom: 0 !important;
+}
+
+/* ---------------- WhatsApp Floating Button ---------------- */
+
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 2px 2px 3px #999;
+  z-index: 100;
+  transition: all 0.3s ease;
+  animation: pulse 2s infinite;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+}
+
+.whatsapp-float a {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+/* ---------------- Modern Design Enhancements ---------------- */
+
+.card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+  transition: transform 0.3s ease;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.btn {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.navbar {
+  backdrop-filter: blur(10px);
+  background-color: rgba(var(--dark-purple-rgb), 0.95) !important;
+}
+
+.footer-logo .logo-text {
+  transition: color 0.3s ease;
+}
+
+.footer-logo:hover .logo-text {
+  color: var(--lavender-60) !important;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading animations */
+.fade-in {
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------- Media Queries ---------------- */
+
+@media only screen and (max-width: 576px) {
+  .icon {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+  
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+  }
+  
+  .whatsapp-float a {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media only screen and (max-width: 426px) {
+  .header-displace {
+    height: 66px;
+  }
+
+  #user-overlay {
+    width: 100vw;
+  }
+
+  .message-container {
+    right: -10px;
+    width: 99vw;
+  }
+
+  .dropdown-menu[data-bs-popper].bag-sm {
+    top: 100%;
+    right: -15px;
+    left: auto;
+    margin-top: 0.125rem;
+  }
+
+  .bag-sm {
+    width: 98vw;
+  }
+}

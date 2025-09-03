@@ -1,0 +1,93 @@
+@import url("https://eau-royal.s3.amazonaws.com/static/css/constants.css");
+
+/* ---------------- Hero ---------------- */
+
+section.hero {
+  min-height: 70vh;
+  background: linear-gradient(135deg, var(--dark-purple) 0%, var(--lavender-60) 100%),
+    url("https://res.cloudinary.com/datonex/image/upload/v1650202213/eau-royal/eau-royal-hompage/hero_y5snmb.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-size: cover;
+  background-blend-mode: overlay;
+  position: relative;
+}
+
+.hero-content {
+  z-index: 2;
+  color: white;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-family: "Petit Formal Script", cursive;
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  font-weight: 300;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  opacity: 0.95;
+}
+
+.home-card img {
+  height: 260px !important;
+  object-fit: cover !important;
+}
+
+/* ---------------- Home Card Enhancements ---------------- */
+
+.home-card {
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.home-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.home-card img {
+  transition: transform 0.3s ease;
+}
+
+.home-card:hover img {
+  transform: scale(1.05);
+}
+
+/* ---------------- Responsive Design ---------------- */
+
+@media only screen and (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .hero-content {
+    padding: 1rem;
+  }
+}
+
+@media only screen and (max-width: 374px) {
+  .home-card img {
+    height: 220px !important;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+}

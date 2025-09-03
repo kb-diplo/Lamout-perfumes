@@ -39,7 +39,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-development-key
 if "DEVELOPMENT" in os.environ:
     DEBUG = True
 else:
-    DEBUG = False
+    DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".pythonanywhere.com"]
 

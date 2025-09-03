@@ -65,12 +65,47 @@
       z-index: 100;
     }
     
-    /* Fix mobile filter overlay issue */
+    /* Mobile filter dropdown */
     @media (max-width: 768px) {
       .filter-section {
         position: relative;
         top: auto;
         z-index: auto;
+        padding: 15px 0;
+      }
+      
+      .mobile-filter-toggle {
+        display: block;
+        width: 100%;
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        margin-bottom: 15px;
+      }
+      
+      .filter-content {
+        display: none;
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+      
+      .filter-content.show {
+        display: block;
+      }
+    }
+    
+    @media (min-width: 769px) {
+      .mobile-filter-toggle {
+        display: none;
+      }
+      
+      .filter-content {
+        display: block !important;
       }
     }
     
@@ -123,70 +158,81 @@
 <!-- Search and Filter Section -->
 <section class="filter-section">
   <div class="container">
-    <!-- Search Bar -->
-    <div class="row mb-4">
-      <div class="col-lg-6 mx-auto">
-        <form method="GET" action="{% url 'catalog:showcase' %}" class="search-form">
-          <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search_query }}">
-            <button class="btn btn-primary" type="submit">Search</button>
-          </div>
-        </form>
+    <!-- Mobile Filter Toggle -->
+    <button class="mobile-filter-toggle" onclick="toggleMobileFilters()">
+      <i class="fas fa-filter me-2"></i>Filter & Search Products
+      <i class="fas fa-chevron-down ms-2" id="filterChevron"></i>
+    </button>
+    
+    <!-- Filter Content -->
+    <div class="filter-content" id="filterContent">
+      <!-- Search Bar -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <form method="GET" class="d-flex justify-content-center">
+            <div class="input-group" style="max-width: 400px;">
+              <input type="text" class="form-control" name="search" placeholder="Search perfumes..." value="{{ request.GET.search }}">
+              <button class="btn btn-outline-secondary" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
 
-    <!-- Category Filters -->
-    <div class="row mb-3">
-      <div class="col-12">
-        <h5 class="text-center mb-3">Filter by Category</h5>
-        <div class="text-center">
-          <a href="?category=all" class="btn btn-sm filter-btn {% if not current_filters.category or current_filters.category == 'all' %}active{% endif %}">
-            All
-          </a>
-          {% for value, label in filter_options.categories %}
-            <a href="?category={{ value }}" class="btn btn-sm filter-btn {% if current_filters.category == value %}active{% endif %}">
-              {{ label }}
+      <!-- Category Filters -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h5 class="text-center mb-3">Filter by Category</h5>
+          <div class="text-center">
+            <a href="?category=all" class="btn btn-sm filter-btn {% if not current_filters.category or current_filters.category == 'all' %}active{% endif %}">
+              All
             </a>
-          {% endfor %}
+            {% for value, label in filter_options.categories %}
+              <a href="?category={{ value }}" class="btn btn-sm filter-btn {% if current_filters.category == value %}active{% endif %}">
+                {{ label }}
+              </a>
+            {% endfor %}
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Price Range Filter -->
-    <div class="row mb-3">
-      <div class="col-12">
-        <h5 class="text-center mb-3">Price Range</h5>
-        <div class="text-center">
-          <a href="?price_range=all" class="btn btn-sm filter-btn {% if not current_filters.price_range or current_filters.price_range == 'all' %}active{% endif %}">
-            All Prices
-          </a>
-          <a href="?price_range=budget" class="btn btn-sm filter-btn {% if current_filters.price_range == 'budget' %}active{% endif %}">
-            Under Ksh 1,000
-          </a>
-          <a href="?price_range=mid_range" class="btn btn-sm filter-btn {% if current_filters.price_range == 'mid_range' %}active{% endif %}">
-            Ksh 1,000 - 3,000
-          </a>
-          <a href="?price_range=premium" class="btn btn-sm filter-btn {% if current_filters.price_range == 'premium' %}active{% endif %}">
-            Over Ksh 3,000
-          </a>
+      <!-- Price Range Filter -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <h5 class="text-center mb-3">Price Range</h5>
+          <div class="text-center">
+            <a href="?price_range=all" class="btn btn-sm filter-btn {% if not current_filters.price_range or current_filters.price_range == 'all' %}active{% endif %}">
+              All Prices
+            </a>
+            <a href="?price_range=budget" class="btn btn-sm filter-btn {% if current_filters.price_range == 'budget' %}active{% endif %}">
+              Under Ksh 1,000
+            </a>
+            <a href="?price_range=mid_range" class="btn btn-sm filter-btn {% if current_filters.price_range == 'mid_range' %}active{% endif %}">
+              Ksh 1,000 - 3,000
+            </a>
+            <a href="?price_range=premium" class="btn btn-sm filter-btn {% if current_filters.price_range == 'premium' %}active{% endif %}">
+              Over Ksh 3,000
+            </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Sort Options -->
-    <div class="row">
-      <div class="col-12">
-        <div class="d-flex justify-content-end">
-          <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-              Sort by: {{ current_filters.sort|title|default:'Name (A-Z)' }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-              <li><a class="dropdown-item {% if current_filters.sort == 'name' or not current_filters.sort %}active{% endif %}" href="?sort=name">Name (A-Z)</a></li>
-              <li><a class="dropdown-item {% if current_filters.sort == 'price_low' %}active{% endif %}" href="?sort=price_low">Price (Low to High)</a></li>
-              <li><a class="dropdown-item {% if current_filters.sort == 'price_high' %}active{% endif %}" href="?sort=price_high">Price (High to Low)</a></li>
-              <li><a class="dropdown-item {% if current_filters.sort == 'newest' %}active{% endif %}" href="?sort=newest">Newest First</a></li>
-            </ul>
+      <!-- Sort Options -->
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-end">
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Sort by: {{ current_filters.sort|title|default:'Name (A-Z)' }}
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item {% if current_filters.sort == 'name' or not current_filters.sort %}active{% endif %}" href="?sort=name">Name (A-Z)</a></li>
+                <li><a class="dropdown-item {% if current_filters.sort == 'price_low' %}active{% endif %}" href="?sort=price_low">Price (Low to High)</a></li>
+                <li><a class="dropdown-item {% if current_filters.sort == 'price_high' %}active{% endif %}" href="?sort=price_high">Price (High to Low)</a></li>
+                <li><a class="dropdown-item {% if current_filters.sort == 'newest' %}active{% endif %}" href="?sort=newest">Newest First</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -590,6 +636,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 });
+
+// Mobile filter toggle function
+function toggleMobileFilters() {
+  const filterContent = document.getElementById('filterContent');
+  const chevron = document.getElementById('filterChevron');
+  
+  if (filterContent.classList.contains('show')) {
+    filterContent.classList.remove('show');
+    chevron.classList.remove('fa-chevron-up');
+    chevron.classList.add('fa-chevron-down');
+  } else {
+    filterContent.classList.add('show');
+    chevron.classList.remove('fa-chevron-down');
+    chevron.classList.add('fa-chevron-up');
+  }
+}
 </script>
 
 {% endblock %}

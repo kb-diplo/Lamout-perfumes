@@ -150,7 +150,7 @@ Thank you for choosing Lamout Perfumes!"""
         # URL encode the message for WhatsApp
         import urllib.parse
         encoded_message = urllib.parse.quote(whatsapp_message)
-        whatsapp_url = f"https://wa.me/254716301107?text={encoded_message}"
+        whatsapp_url = f"https://wa.me/+254716301107?text={encoded_message}"
         
         messages.success(request, f'Thank you {customer_name}! Your order has been prepared. Click the WhatsApp button to send it to us.')
         
